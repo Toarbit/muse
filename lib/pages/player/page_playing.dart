@@ -435,7 +435,7 @@ class _PlayingSimpleTitle extends StatelessWidget {
             onSelected: (String action) {
               switch (action) {
                 case "comment":
-                  final music = context.playerValue.current;
+                  final music = context.listenPlayerValue.current;
                   if (music == null) {
                     return;
                   }
@@ -466,7 +466,7 @@ class _PlayingInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final music = context.playerValue.current;
+    final music = context.listenPlayerValue.current;
     final liked = LikedSongList.contain(context, music);
     final theme = Theme.of(context).primaryTextTheme;
 
@@ -478,15 +478,18 @@ class _PlayingInfo extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-                  Text(
-                    music.title,
-                    style: theme.title.copyWith(fontSize: 28, color: theme.body1.color.withOpacity(0.85)),
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        music.title,
+                        style: theme.headline5.copyWith(color: theme.bodyText2.color.withOpacity(0.85)),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      )
                   ),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 4)),
                   Text(
                     music.artist.map((a) => a.name).join('/'),
-                    style: theme.title.copyWith(color: theme.body1.color.withOpacity(0.7)),
+                    style: theme.headline6.copyWith(color: theme.bodyText2.color.withOpacity(0.65)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -507,6 +510,7 @@ class _PlayingInfo extends StatelessWidget {
                   }
                 }),
           ],
-        ));
+        )
+    );
   }
 }
