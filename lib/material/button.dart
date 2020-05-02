@@ -332,7 +332,7 @@ class FrostedCloseButton extends StatefulWidget {
 }
 
 class FrostedCloseButtonState extends State<FrostedCloseButton> {
-  static const closeButtonUnpressed = Color(0xff101010);
+  static const closeButtonUnpressed = Color(0xff404040);
   static const closeButtonPressed = Color(0xff808080);
   bool tapInProgress = false;
 
