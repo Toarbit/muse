@@ -173,6 +173,17 @@ class _ItemComment extends StatefulWidget {
 }
 
 class _ItemCommentState extends State<_ItemComment> {
+
+  Future<bool> onLikeButtonTapped(bool isLiked) async{
+    /// send your request here
+    // final bool success= await sendRequest();
+
+    /// if failed, you can do nothing
+    // return success? !isLiked:isLiked;
+
+    return !isLiked;
+  }
+
   @override
   Widget build(BuildContext context) {
     User user = widget.comment.user;
@@ -237,28 +248,26 @@ class _ItemCommentState extends State<_ItemComment> {
                       ),
                     ],
                   )),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.ideographic,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        widget.comment.likedCount.toKindCount(),
-                        style: TextStyle(fontSize: 11),
-                      ),
-                      Padding(padding: EdgeInsets.only(left: 5)),
-                      InkResponse(
-                        onTap: () async {
-                          //TODO
-                        },
-                        child: Icon(
+                  LikeButton(
+                      isLiked: widget.comment.liked,
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
                           Icons.thumb_up,
-                          size: 15,
-                          color: widget.comment.liked ? Theme.of(context).accentColor : Theme.of(context).disabledColor,
+                          size: 16,
+                          color: isLiked ? Theme.of(context).accentColor : Theme.of(context).disabledColor,
+                        );
+                      },
+                      likeCount: widget.comment.likedCount,
+                      countBuilder: (int count, bool isLiked, String text) =>
+                        Text(
+                          count < 10000 ? text : getFormattedNumber(count),
+                          style: TextStyle(fontSize: 11, color: isLiked ? Theme.of(context).accentColor : Theme.of(context).disabledColor),
                         ),
-                      )
-                    ],
-                  ),
+                      /// [likeCountAnimationType] is link to [getFormattedNumber]
+                      likeCountAnimationType: widget.comment.likedCount < 10000 ? LikeCountAnimationType.part : LikeCountAnimationType.none,
+                      likeCountPadding: EdgeInsets.only(),
+                      onTap: onLikeButtonTapped
+                  )
                 ],
               ),
               Container(
