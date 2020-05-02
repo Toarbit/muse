@@ -26,56 +26,51 @@ class PlayListDescDialog extends StatelessWidget {
               color: Colors.black54,
             ),
           ),
-          SafeArea(
-            bottom: false,
-            child: Stack(
-              children: <Widget>[
-                SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics()),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(padding: EdgeInsets.symmetric(vertical: 32)),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: Hero(
-                            tag: playlist.heroTag,
-                            child: Image(
-                                fit: BoxFit.cover,
-                                image: CachedImage(playlist.coverUrl),
-                                width: 240,
-                                height: 240),
+          Stack(
+            children: <Widget>[
+              Positioned.fill(
+                  child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                      child: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.symmetric(vertical: 32)),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Hero(
+                              tag: playlist.heroTag,
+                              child: Image(
+                                  fit: BoxFit.cover,
+                                  image: CachedImage(playlist.coverUrl),
+                                  width: 240,
+                                  height: 240),
+                            ),
                           ),
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-                        Text(
-                          playlist.name,
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context).primaryTextTheme.headline,
-                          softWrap: true,
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-                        Text(
-                          playlist.description,
-                          style: Theme.of(context).primaryTextTheme.title,
-                          softWrap: true,
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                    left: 18,
-                    top: 8,
+                          Padding(padding: EdgeInsets.symmetric(vertical: 12)),
+                          Text(
+                            playlist.name,
+                            style: Theme.of(context).primaryTextTheme.headline5,
+                          ),
+                          Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+                          Text(
+                            playlist.description,
+                            style: Theme.of(context).primaryTextTheme.subtitle1.copyWith(color: Theme.of(context).primaryTextTheme.subtitle1.color.withOpacity(0.7)),
+                          ),
+                          Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+                        ],
+                      )
+                  )
+              ),
+              Positioned(
+                left: 12,
+                top: 12,
+                child: SafeArea(
                     child: button.FrostedCloseButton(() {
                       Navigator.of(context).pop();
                     })),
-              ],
-            ),
-          ),
+              )
+            ],
+          )
         ],
       ),
     );

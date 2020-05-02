@@ -452,89 +452,35 @@ class _PlaylistDetailHeader extends StatelessWidget {
         onShareTap: () => toast("未接入！"),
         content: Container(
           height: 160,
-          padding: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.only(top: 18),
           child: Row(
             children: <Widget>[
-              SizedBox(width: 32),
+              SizedBox(width: 24),
               AspectRatio(
                 aspectRatio: 1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(6)),
-                  child: Stack(
-                    children: <Widget>[
-                      QuietHero(
-                        tag: playlist.heroTag,
-                        child: Image(fit: BoxFit.cover, image: CachedImage(playlist.coverUrl)),
-                      ),
-//                      Container(
-//                        padding: EdgeInsets.all(4),
-//                        decoration: BoxDecoration(
-//                            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-//                          Colors.black54,
-//                          Colors.black26,
-//                          Colors.transparent,
-//                          Colors.transparent,
-//                        ])),
-//                        child: Align(
-//                          alignment: Alignment.topRight,
-//                          child: Row(
-//                            mainAxisSize: MainAxisSize.min,
-//                            children: <Widget>[
-//                              Icon(Icons.headset, color: Theme.of(context).primaryIconTheme.color, size: 12),
-//                              Text(getFormattedNumber(playlist.playCount),
-//                                  style: Theme.of(context).primaryTextTheme.body1.copyWith(fontSize: 11))
-//                            ],
-//                          ),
-//                        ),
-//                      )
-                    ],
-                  ),
-                ),
+                  child: QuietHero(
+                    tag: playlist.heroTag,
+                    child: Image(fit: BoxFit.cover, image: CachedImage(playlist.coverUrl)),
+                  )
+                )
               ),
-              SizedBox(width: 24),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(
-                      playlist.name,
-                      style: Theme.of(context).primaryTextTheme.headline6.copyWith(fontSize: 17),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        playlist.name,
+                        style: Theme.of(context).primaryTextTheme.headline6,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-//                    SizedBox(height: 10),
-//                    InkWell(
-//                      onTap: () {
-//                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-//                          return UserDetailPage(userId: creator['userId']);
-//                        }));
-//                      },
-//                      child: Padding(
-//                        padding: const EdgeInsets.only(top: 4, bottom: 4),
-//                        child: Row(
-//                          mainAxisSize: MainAxisSize.min,
-//                          children: <Widget>[
-//                            SizedBox(
-//                              height: 24,
-//                              width: 24,
-//                              child: ClipOval(
-//                                child: Image(image: CachedImage(creator["avatarUrl"])),
-//                              ),
-//                            ),
-//                            Padding(padding: EdgeInsets.only(left: 4)),
-//                            Text(
-//                              creator["nickname"],
-//                              style: Theme.of(context).primaryTextTheme.bodyText2,
-//                            ),
-//                            Icon(
-//                              Icons.chevron_right,
-//                              color: Theme.of(context).primaryIconTheme.color,
-//                            )
-//                          ],
-//                        ),
-//                      ),
-//                    ),
                     _buildDescription(context)
                   ],
                 ),
@@ -556,8 +502,7 @@ class _PlaylistDetailHeader extends StatelessWidget {
             return PlayListDescDialog(playlist);
           },
           barrierDismissible: true,
-          barrierLabel:
-          MaterialLocalizations.of(context).modalBarrierDismissLabel,
+          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
           transitionDuration: const Duration(milliseconds: 150),
           transitionBuilder: _buildMaterialDialogTransitions,
         );
@@ -565,9 +510,9 @@ class _PlaylistDetailHeader extends StatelessWidget {
       child: playlist != null && playlist.description != null && playlist.description.isNotEmpty ?
       Text(
         playlist.description,
-        maxLines: 2,
+        maxLines: 4,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).primaryTextTheme.body1.copyWith(color: Theme.of(context).primaryTextTheme.body1.color.withOpacity(0.7)),
+        style: Theme.of(context).primaryTextTheme.bodyText2.copyWith(color: Theme.of(context).primaryTextTheme.bodyText2.color.withOpacity(0.7)),
       ) : Container(),
     );
   }
