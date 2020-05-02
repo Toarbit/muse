@@ -101,11 +101,6 @@ class PlayerControllerBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-              icon: getPlayModeIcon(context, color),
-              onPressed: () {
-                context.transportControls.setPlayMode(context.playMode.next);
-              }),
-          IconButton(
               iconSize: 36,
               icon: Icon(
                 Icons.skip_previous,
