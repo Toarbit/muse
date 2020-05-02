@@ -46,8 +46,8 @@ class _MainPageState extends State<_PortraitMainPage> with SingleTickerProviderS
             indicator: UnderlineTabIndicator(insets: EdgeInsets.only(bottom: 4)),
             indicatorSize: TabBarIndicatorSize.label,
             tabs: <Widget>[
-              Tab(child: Icon(Icons.music_note)),
               Tab(child: Icon(Icons.cloud)),
+              Tab(child: Icon(Icons.music_note)),
             ],
           ),
         ),
@@ -64,7 +64,7 @@ class _MainPageState extends State<_PortraitMainPage> with SingleTickerProviderS
       ),
       body: BoxWithBottomPlayerController(TabBarView(
         controller: _tabController,
-        children: <Widget>[MainPlaylistPage(), MainCloudPage()],
+        children: <Widget>[MainCloudPage(), MainPlaylistPage()],
       )),
     );
   }
