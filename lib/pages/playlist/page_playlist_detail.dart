@@ -329,6 +329,7 @@ class DetailHeader extends StatelessWidget {
       this.onCommentTap,
       this.onShareTap,
       this.onSelectionTap,
+      this.onContentTap,
       int commentCount = 0,
       int shareCount = 0,
       this.background})
@@ -341,6 +342,7 @@ class DetailHeader extends StatelessWidget {
   final GestureTapCallback onCommentTap;
   final GestureTapCallback onShareTap;
   final GestureTapCallback onSelectionTap;
+  final GestureTapCallback onContentTap;
 
   final int commentCount;
   final int shareCount;
@@ -358,7 +360,10 @@ class DetailHeader extends StatelessWidget {
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
             child: Column(
               children: <Widget>[
-                content,
+                GestureDetector(
+                  onTap: onContentTap,
+                  child: content,
+                ),
                 SizedBox(height: 10),
                 Spacer(),
                 Row(
@@ -422,7 +427,6 @@ class _PlaylistDetailHeader extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
-    Map<String, Object> creator = playlist.creator;
 
     return DetailHeader(
         commentCount: playlist.commentCount,
@@ -450,6 +454,9 @@ class _PlaylistDetailHeader extends StatelessWidget {
           }
         },
         onShareTap: () => toast("未接入！"),
+        onContentTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PlayListDescDialog(playlist))
+        ),
         content: Container(
           height: 160,
           padding: EdgeInsets.only(top: 18),
@@ -474,11 +481,14 @@ class _PlaylistDetailHeader extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        playlist.name,
-                        style: Theme.of(context).primaryTextTheme.headline6,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      child: Hero(
+                        tag: playlist.name,
+                        child: Text(
+                          playlist.name,
+                          style: Theme.of(context).primaryTextTheme.headline6,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                     _buildDescription(context)
@@ -492,41 +502,12 @@ class _PlaylistDetailHeader extends StatelessWidget {
   }
 
   /// 构建歌单简介
-  Widget _buildDescription(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showGeneralDialog(
-          context: context,
-          pageBuilder: (BuildContext buildContext, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
-            return PlayListDescDialog(playlist);
-          },
-          barrierDismissible: true,
-          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-          transitionDuration: const Duration(milliseconds: 150),
-          transitionBuilder: _buildMaterialDialogTransitions,
-        );
-      },
-      child: playlist != null && playlist.description != null && playlist.description.isNotEmpty ?
+  Widget _buildDescription(BuildContext context) =>
+      playlist != null && playlist.description != null && playlist.description.isNotEmpty ?
       Text(
         playlist.description,
         maxLines: 4,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).primaryTextTheme.bodyText2.copyWith(color: Theme.of(context).primaryTextTheme.bodyText2.color.withOpacity(0.7)),
-      ) : Container(),
-    );
-  }
-  Widget _buildMaterialDialogTransitions(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child) {
-    return FadeTransition(
-      opacity: CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOut,
-      ),
-      child: child,
-    );
-  }
+      ) : Container();
 }

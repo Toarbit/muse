@@ -47,9 +47,12 @@ class PlayListDescDialog extends StatelessWidget {
                             ),
                           ),
                           Padding(padding: EdgeInsets.symmetric(vertical: 12)),
-                          Text(
-                            playlist.name,
-                            style: Theme.of(context).primaryTextTheme.headline5,
+                          Hero(
+                            tag: playlist.name,
+                            child: Text(
+                              playlist.name,
+                              style: Theme.of(context).primaryTextTheme.headline5,
+                            ),
                           ),
                           Padding(padding: EdgeInsets.symmetric(vertical: 16)),
                           Text(
