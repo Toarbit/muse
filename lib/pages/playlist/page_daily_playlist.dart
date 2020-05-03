@@ -22,6 +22,7 @@ class DailyPlaylistPage extends StatelessWidget {
                 final list = (result["recommend"] as List).cast<Map>().map(mapJsonToMusic).toList();
                 return MusicTileConfiguration(
                     token: 'playlist_daily_recommend',
+                    title: "Daily Recommend",
                     musics: list,
                     trailingBuilder: MusicTileConfiguration.defaultTrailingBuilder,
                     leadingBuilder: MusicTileConfiguration.coverLeadingBuilder,
@@ -106,9 +107,10 @@ class _HeaderContent extends StatelessWidget {
               Text.rich(TextSpan(children: [
                 TextSpan(
                     text: date.day.toString().padLeft(2, '0'),
-                    style: TextStyle(fontSize: 23)),
+                    style: Theme.of(context).primaryTextTheme.headline6),
                 TextSpan(text: ' / '),
-                TextSpan(text: date.month.toString().padLeft(2, '0')),
+                TextSpan(text: date.month.toString().padLeft(2, '0'),
+                    style: Theme.of(context).primaryTextTheme.subtitle1),
               ])),
               SizedBox(height: 4),
               Text(

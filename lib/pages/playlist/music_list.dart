@@ -51,7 +51,7 @@ class MusicTileConfiguration extends StatelessWidget {
               height: 40,
               fit: BoxFit.cover,
               image: CachedImage(music.imageUrl?.toString() ?? ""),
-              placeholder: AssetImage("assets/playlist_playlist.9.png"),
+              placeholder: AssetImage("assets/placeholder_album.png"),
             ),
           ),
         );
