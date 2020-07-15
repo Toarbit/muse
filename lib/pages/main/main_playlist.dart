@@ -57,7 +57,7 @@ class _MainPlaylistState extends State<MainPlaylistPage> with AutomaticKeepAlive
             builder: (context, result) {
               final created = result.where((p) => p.creator["userId"] == userId).toList();
               final subscribed = result.where((p) => p.creator["userId"] != userId).toList();
-              return ListView(children: [
+              return ListView(physics: BouncingScrollPhysics(), children: [
                 _PinnedHeader(),
                 _ExpansionPlaylistGroup.fromPlaylist(
                   "创建的歌单",

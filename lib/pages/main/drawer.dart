@@ -22,14 +22,9 @@ class _Drawer extends StatelessWidget {
                           Navigator.pushNamed(context, ROUTE_SETTING);
                         },
                       ),
-                      Divider(height: 0, indent: 16),
-                      _DrawerTile(
-                        icon: Icon(Icons.format_quote),
-                        title: Text("Star On GitHub"),
-                        onTap: () {
-                          launch("https://github.com/boyan01/flutter-netease-music");
-                        },
-                      ),
+                      _DrawerTile(icon: Icon(Icons.timer), title: Text("定时"), onTap: (){
+                        showDialog(context: context, builder: (BuildContext context) => DialogSleepTimer());
+                      })
                     ],
                   ),
                 ),

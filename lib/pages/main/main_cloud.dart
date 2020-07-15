@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muse/model/playlist_detail.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:muse/pages/playlist/music_list.dart';
 import 'package:muse/pages/playlist/page_playlist_detail.dart';
@@ -18,6 +19,7 @@ class CloudPageState extends State<MainCloudPage> with AutomaticKeepAliveClientM
   Widget build(BuildContext context) {
     super.build(context);
     return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
         children: <Widget>[
           _buildHomeCategoryList(),
@@ -28,7 +30,7 @@ class CloudPageState extends State<MainCloudPage> with AutomaticKeepAliveClientM
           _Header("推荐歌单", () {
             Navigator.pushNamed(context, ROUTE_PERSONALIZED_PLAYLIST);
           }),
-          _SectionPlaylist(),
+          _SectionRecommendPlaylist(),
           _Header("最新音乐", () {}),
           _SectionNewSongs(),
         ],
@@ -106,6 +108,7 @@ class CloudPageState extends State<MainCloudPage> with AutomaticKeepAliveClientM
                         '${DateTime.now().day}',
                         style: TextStyle(
                             color: Theme.of(context).primaryColor,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold),
                       )
                           : Text(''),
@@ -173,10 +176,10 @@ class _Header extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Padding(padding: EdgeInsets.only(left: 12)),
+          Padding(padding: EdgeInsets.only(left: 8)),
           Text(
             text,
-            style: Theme.of(context).textTheme.subtitle1.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w800),
           ),
           IconButton(
             icon: Icon(Icons.chevron_right),
@@ -229,7 +232,7 @@ class _ItemNavigator extends StatelessWidget {
   _ItemNavigator(this.icon, this.text, this.onTap);
 }
 
-class _SectionPlaylist extends StatelessWidget {
+class _SectionRecommendPlaylist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader<Map>(
@@ -248,7 +251,7 @@ class _SectionPlaylist extends StatelessWidget {
               spacing: spacing,
               direction: Axis.horizontal,
               children: list.map<Widget>((p) {
-                return _PlayListItemView(playlist: p, width: width);
+                return _PlayListItemView(playlist: p, width: width, reuse: false);
               }).toList(),
             ),
           );
@@ -263,10 +266,13 @@ class _PlayListItemView extends StatelessWidget {
 
   final double width;
 
+  final bool reuse;
+
   const _PlayListItemView({
     Key key,
     @required this.playlist,
     @required this.width,
+    this.reuse = true
   }) : super(key: key);
 
   @override
@@ -293,7 +299,9 @@ class _PlayListItemView extends StatelessWidget {
       onTap: () {
         context.secondaryNavigator.push(MaterialPageRoute(builder: (context) {
           return PlaylistDetailPage(
-            playlist["id"],
+              playlist["id"],
+              // 排除通过 [_SectionRecommendPlaylist] 获取的列表
+              playlist: reuse ? PlaylistDetail.fromMap(playlist) : null
           );
         }));
       },
@@ -307,21 +315,21 @@ class _PlayListItemView extends StatelessWidget {
               height: width,
               width: width,
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(6)),
+                borderRadius: BorderRadius.all(Radius.circular(8)),
                 child: AspectRatio(
-                  aspectRatio: 1,
-                  child: FadeInImage(
-                    placeholder: AssetImage("assets/playlist_playlist.9.png"),
-                    image: CachedImage(playlist["picUrl"]),
-                    fit: BoxFit.cover,
-                  ),
+                    aspectRatio: 1,
+                    child: FadeInImage(
+                      placeholder: AssetImage("assets/placeholder_album.png"),
+                      image: CachedImage(playlist["coverImgUrl"] ?? playlist["picUrl"]),
+                      fit: BoxFit.cover,
+                    ),
                 ),
               ),
             ),
             Padding(padding: EdgeInsets.only(top: 4)),
             Text(
               playlist["name"],
-              style: Theme.of(context).textTheme.subtitle.copyWith(height: 0.97),
+              style: Theme.of(context).textTheme.subtitle2.copyWith(height: 0.97),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -332,7 +340,6 @@ class _PlayListItemView extends StatelessWidget {
   }
 }
 
-
 class _SectionTopPlaylist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -340,16 +347,23 @@ class _SectionTopPlaylist extends StatelessWidget {
       loadTask: () => neteaseRepository.topPlaylist(limit: 6),
       builder: (context, result) {
         List<Map> list = (result["playlists"] as List).cast();
-        return GridView.count(
-          padding: EdgeInsets.symmetric(horizontal: 6.0),
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          childAspectRatio: 10 / 12,
-          children: list.map<Widget>((p) {
-            return _buildPlaylistItem(context, p);
-          }).toList(),
-        );
+        return LayoutBuilder(builder: (context, constraints) {
+          assert(constraints.maxWidth.isFinite, "can not layout playlist item in infinite width container.");
+          final parentWidth = constraints.maxWidth - 8;
+          int count = 2;
+          double width = (parentWidth ~/ count).toDouble().clamp(80.0, 200.0);
+          double spacing = (parentWidth - width * count) / (count + 1);
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4 + spacing.roundToDouble()),
+            child: Wrap(
+              spacing: spacing,
+              direction: Axis.horizontal,
+              children: list.map<Widget>((p) {
+                return _PlayListItemView(playlist: p, width: width);
+              }).toList(),
+            ),
+          );
+        });
       },
     );
   }
@@ -377,7 +391,7 @@ class _SectionTopPlaylist extends StatelessWidget {
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return PlaylistDetailPage(
-            playlist["id"],
+            playlist["id"], playlist: PlaylistDetail.fromJson(playlist),
           );
         }));
       },
@@ -388,7 +402,7 @@ class _SectionTopPlaylist extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ClipRRect(
-//              borderRadius: BorderRadius.all(Radius.circular(6)),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 1,
                 child: FadeInImage(
