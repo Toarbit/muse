@@ -68,7 +68,9 @@ class BottomControllerBar extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (music != null) {
-          context.rootNavigator.pushNamed(queue.isPlayingFm ? pageFmPlaying : pagePlaying);
+          context.rootNavigator.push(
+              MaterialPageRoute(builder: routes[queue.isPlayingFm ? pageFmPlaying : pagePlaying])
+          );
         }
       },
       child: Card(
@@ -110,10 +112,12 @@ class BottomControllerBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Spacer(),
-                      Text(
-                        music.title,
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
+                      QuietHero(
+                          tag: "album_title",
+                          child: Text(
+                            music.title,
+                            style: Theme.of(context).textTheme.bodyText2,
+                          )),
                       Padding(padding: const EdgeInsets.only(top: 2)),
                       DefaultTextStyle(
                         child: ProgressTrackingContainer(

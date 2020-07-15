@@ -23,16 +23,13 @@ void main() {
   neteaseRepository = NeteaseRepository();
   api.debugPrint = debugPrint;
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  runApp(PageSplash(
-    futures: [
-      SharedPreferences.getInstance(),
-      UserAccount.getPersistenceUser(),
-    ],
-    builder: (context, data) {
-      final setting = Settings(data[0]);
-      return MyApp(setting: setting, user: data[1]);
-    },
-  ));
+  Future.wait([
+    SharedPreferences.getInstance(),
+    UserAccount.getPersistenceUser(),
+  ]).then((values) {
+    final setting = Settings(values[0]);
+    runApp(MyApp(setting: setting, user: values[1]));
+  });
 }
 
 /// The entry of dart background service
@@ -64,17 +61,15 @@ class MyApp extends StatelessWidget {
         return Netease(
           user: user,
           child: Quiet(
-            child: CopyRightOverlay(
-              child: OverlaySupport(
-                child: MaterialApp(
-                  routes: routes,
-                  onGenerateRoute: routeFactory,
-                  title: 'Quiet',
-                  theme: setting.theme,
-                  darkTheme: setting.darkTheme,
-                  themeMode: setting.themeMode,
-                  initialRoute: getInitialRoute(),
-                ),
+            child: OverlaySupport(
+              child: MaterialApp(
+                routes: routes,
+                onGenerateRoute: routeFactory,
+                title: 'Muse',
+                theme: setting.theme,
+                darkTheme: setting.darkTheme,
+                themeMode: setting.themeMode,
+                initialRoute: getInitialRoute(),
               ),
             ),
           ),
