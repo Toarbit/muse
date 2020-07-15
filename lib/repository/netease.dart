@@ -131,11 +131,19 @@ class NeteaseRepository {
   /// [s] 歌单最近的 s 个收藏者
   Future<Result<PlaylistDetail>> playlistDetail(int id, {int s = 5}) async {
     final response = await doRequest("/playlist/detail", {"id": "$id", "s": s});
-    return _map(response, (t) {
-      final result = PlaylistDetail.fromJson(t["playlist"]);
-      neteaseLocalData.updatePlaylistDetail(result);
-      return result;
-    });
+    if (response.isError) return response.asError;
+    final value = response.asValue.value["playlist"];
+    final count = (value["tracks"] as List).length;
+    if (count != value["trackCount"]) {
+      final ids = <int>[];
+      (value["trackIds"] as Iterable).skip(count).forEach((e)=>ids.add(e["id"]));
+      final extra = await getMusicsDetail(ids);
+      if (!extra.isError) (value["tracks"] as List).addAll(extra.asValue.value);
+      else return Result.error(extra.asError.error, extra.asError.stackTrace);
+    }
+    final result = PlaylistDetail.fromJson(value);
+    neteaseLocalData.updatePlaylistDetail(result);
+    return Result.value(result);
   }
 
   ///id 歌单id
@@ -151,8 +159,9 @@ class NeteaseRepository {
   }
 
   ///推荐歌单
-  Future<Result<Map>> personalizedPlaylist({int limit = 30, int offset = 0}) {
-    return doRequest("/personalized", {"limit": limit, "offset": offset, "total": true, "n": 1000});
+  Future<Result<Map>> personalizedPlaylist({int limit = 30}) {
+    debugPrint("get personalized playlist");
+    return doRequest("/personalized", {"limit": limit, "total": true, "n": 1000});
   }
 
   ///热门歌单
@@ -257,6 +266,15 @@ class NeteaseRepository {
 
     return _map(result, (result) {
       return result["songs"][0];
+    });
+  }
+
+  ///fetch music detail from id
+  Future<Result<List<dynamic>>> getMusicsDetail(List<int> ids) async {
+    final result = await doRequest("/song/detail", {"ids": ids.join(",")});
+
+    return _map(result, (result) {
+      return result["songs"] as List<dynamic>;
     });
   }
 
