@@ -15,8 +15,12 @@ class PlayingListDialog extends StatefulWidget {
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
+        isScrollControlled: true,
         builder: (context) {
-          return PlayingListDialog();
+          return FractionallySizedBox(
+            heightFactor: 0.66,
+            child: PlayingListDialog(),
+          );
         });
   }
 
@@ -48,24 +52,88 @@ class PlayingListDialogState extends State<PlayingListDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _Header(),
+          ..._buildHeader(context),
           const Divider(
             height: 1,
             thickness: 1,
+            color: Color(0xFFD6D6D6),
           ),
           Expanded(
             child: ListView.builder(
                 controller: _controller,
+                physics: BouncingScrollPhysics(),
                 itemCount: playingList.length,
                 itemBuilder: (context, index) {
                   var item = playingList[index];
-                  return _MusicTile(music: item, playing: item == music);
+                  return _MusicTile(music: item, playing: item == music, index: index);
                 }),
           )
         ],
       ),
     );
   }
+
+  List<Widget> _buildHeader(BuildContext context) {
+    final title = context.playList.queueTitle;
+    return title == null || title.isEmpty ?
+    _buildActions(context) :
+    <Widget>[
+      _buildActions(context),
+      Padding(
+        padding: EdgeInsets.fromLTRB(16, 2, 16, 12),
+        child: Text(
+            context.playList.queueTitle ?? "Untitled",
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.subtitle1),
+      )
+    ];
+  }
+  Widget _buildActions(BuildContext context) {
+    final playMode = context.playMode;
+    final count = context.playList.queue.length;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        FlatButton.icon(
+            onPressed: () {
+              context.transportControls.setPlayMode(playMode.next);
+            },
+            icon: Icon(playMode.icon),
+            label: Text("${playMode.name}($count)")),
+        Spacer(),
+        FlatButton.icon(
+            onPressed: () async {
+              final ids = context.playList.queue.map((m) => int.parse(m.mediaId)).toList();
+              if (ids.isEmpty) {
+                return;
+              }
+              final succeed = await PlaylistSelectorDialog.addSongs(context, ids);
+              if (succeed == null) {
+                return;
+              }
+              if (succeed) {
+                showSimpleNotification(Text("添加到收藏成功"));
+              } else {
+                showSimpleNotification(Text("添加到收藏失败"),
+                    leading: Icon(Icons.error), background: Theme.of(context).errorColor);
+              }
+            },
+            icon: Icon(Icons.add_box),
+            label: Text("收藏全部")),
+        IconButton(
+            icon: Icon(Icons.delete_outline),
+            onPressed: () async {
+              Navigator.pop(context);
+              //FIXME
+//                  context.player.setPlayList(PlayList.empty());
+            })
+      ],
+    );
+  }
+
 }
 
 class _PlayingListContainer extends StatelessWidget {
@@ -124,68 +192,14 @@ class _LandscapePlayingListContainer extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final playMode = context.playMode;
-    final count = context.playList.queue.length;
-    return Container(
-      height: 48,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(context.playList.queueTitle ?? "Untitled", style: Theme.of(context).textTheme.subhead),
-            ),
-          ),
-          FlatButton.icon(
-              onPressed: () {
-                context.transportControls.setPlayMode(playMode.next);
-              },
-              icon: Icon(playMode.icon),
-              label: Text("${playMode.name}($count)")),
-          Spacer(),
-          FlatButton.icon(
-              onPressed: () async {
-                final ids = context.playList.queue.map((m) => int.parse(m.mediaId)).toList();
-                if (ids.isEmpty) {
-                  return;
-                }
-                final succeed = await PlaylistSelectorDialog.addSongs(context, ids);
-                if (succeed == null) {
-                  return;
-                }
-                if (succeed) {
-                  showSimpleNotification(Text("添加到收藏成功"));
-                } else {
-                  showSimpleNotification(Text("添加到收藏失败"),
-                      leading: Icon(Icons.error), background: Theme.of(context).errorColor);
-                }
-              },
-              icon: Icon(Icons.add_box),
-              label: Text("收藏全部")),
-          IconButton(
-              icon: Icon(Icons.delete_outline),
-              onPressed: () async {
-                Navigator.pop(context);
-                //FIXME
-//                  context.player.setPlayList(PlayList.empty());
-              })
-        ],
-      ),
-    );
-  }
-}
-
 const _HEIGHT_MUSIC_TILE = 48.0;
 
 class _MusicTile extends StatelessWidget {
   final Music music;
   final bool playing;
+  final int index;
 
-  const _MusicTile({Key key, this.music, this.playing = false})
+  const _MusicTile({Key key, this.music, this.playing = false, this.index = -1})
       : assert(music != null && playing != null),
         super(key: key);
 
@@ -206,7 +220,14 @@ class _MusicTile extends StatelessWidget {
       name = color;
       artist = color;
     } else {
-      leading = Container();
+      leading = Container(
+        margin: EdgeInsets.only(right: 8),
+        width: 18,
+        child: Text(
+            index.toString(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption),
+      );
       name = Theme.of(context).textTheme.bodyText2.color;
       artist = Theme.of(context).textTheme.caption.color;
     }
@@ -217,9 +238,8 @@ class _MusicTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.only(left: 8),
         height: _HEIGHT_MUSIC_TILE,
-        decoration:
-            BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor, width: 0.3))),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             leading,
             Expanded(
@@ -234,7 +254,7 @@ class _MusicTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             )),
             IconButton(
-                icon: Icon(Icons.close),
+                icon: Icon(Icons.close, size: 18),
                 onPressed: () {
                   context.player.removeMusicItem(music.metadata);
                 })
