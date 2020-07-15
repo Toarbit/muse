@@ -473,15 +473,17 @@ class _PlayingInfo extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        music.title,
-                        style: theme.headline5.copyWith(color: theme.bodyText2.color.withOpacity(0.85)),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      )
-                  ),
+                  QuietHero(
+                      tag: "album_title",
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            music.title,
+                            style: theme.headline5.copyWith(color: theme.bodyText2.color.withOpacity(0.85)),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          )
+                      )),
                   Text(
                     music.artist.map((a) => a.name).join('/'),
                     style: theme.headline6.copyWith(color: theme.bodyText2.color.withOpacity(0.65)),

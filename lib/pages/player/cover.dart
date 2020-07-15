@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:muse/component/player/player.dart';
+import 'package:muse/material/hero.dart';
 import 'package:muse/model/model.dart';
 import 'package:muse/repository/cached_image.dart';
 import 'package:muse_player/muse_player.dart';
@@ -41,11 +42,13 @@ class _StaticAlbumCoverState extends State<StaticAlbumCover> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.transparent,
-        padding: const EdgeInsets.only(
-            left: 36, right: 36, top: HEIGHT_SPACE_ALBUM_TOP),
-        child: _StaticCoverImage(_current));
+    return QuietHero(
+        tag: "album_cover",
+        child: Container(
+            color: Colors.transparent,
+            padding: const EdgeInsets.only(
+                left: 36, right: 36, top: HEIGHT_SPACE_ALBUM_TOP),
+            child: _StaticCoverImage(_current)));
   }
 }
 
