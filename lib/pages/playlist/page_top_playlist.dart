@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loader/loader.dart';
+import 'package:muse/model/playlist_detail.dart';
 import 'package:muse/pages/playlist/page_playlist_detail.dart';
 import 'package:muse/repository/netease.dart';
 
@@ -99,7 +100,7 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
               return AlertDialog(
                 content: Text(
                   playlist["copywriter"],
-                  style: Theme.of(context).textTheme.body2,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
               );
             });
@@ -110,7 +111,7 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return PlaylistDetailPage(
-            playlist["id"],
+            playlist["id"], playlist: PlaylistDetail.fromMap(playlist),
           );
         }));
       },

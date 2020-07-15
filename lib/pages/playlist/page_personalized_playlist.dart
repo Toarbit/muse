@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:muse/pages/playlist/page_playlist_detail.dart';
 import 'package:muse/repository/netease.dart';
-import 'package:loader/loader.dart';
 
 class PersonalizedPlaylistPage extends StatefulWidget {
   @override
@@ -31,28 +30,17 @@ class _PersonalizedPlaylistState extends State<PersonalizedPlaylistPage> {
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(),
-          title: const Text("歌单"),
+          title: const Text("推荐歌单"),
         ),
-        body: view(context)
+        body: buildView(context)
     );
   }
 
-  Widget view(BuildContext context) {
-    if (data == null)
-      return Loader<Map>(
-        loadTask: () => neteaseRepository.topPlaylist(),
-        builder: (context, result) {
-          data = (result["result"] as List).cast();
-          return buildView(context);
-        },
-      );
-    return buildView(context);
-  }
   Widget buildView(BuildContext context) {
     return RefreshIndicator(
       child: SingleChildScrollView(
         controller: _scrollController,
-        child: GridView.count(
+        child: data == null ? CircularProgressIndicator() : GridView.count(
           padding: EdgeInsets.all(6.0),
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -69,8 +57,6 @@ class _PersonalizedPlaylistState extends State<PersonalizedPlaylistPage> {
 
   Future<Null> _handleRefresh() async {
     var list = await (await neteaseRepository.personalizedPlaylist()).asFuture;
-    debugPrint("load refresh size: ${list.length}");
-    debugPrint("load refresh keys: ${list["result"]}");
     setState(() {
       data = (list["result"] as List).cast();
     });
@@ -79,9 +65,9 @@ class _PersonalizedPlaylistState extends State<PersonalizedPlaylistPage> {
   // TODO 提供加载标识
   Future<Null> _getMore() async {
     if (data == null || data.length == 0) return _handleRefresh();
-    var list = await (await neteaseRepository.personalizedPlaylist(offset: data.length)).asFuture;
+    var list = await (await neteaseRepository.personalizedPlaylist(limit: data.length+30)).asFuture;
     setState(() {
-      data.addAll((list["result"] as List).cast());
+      data.addAll((list["result"] as List).sublist(data.length+1).cast());
     });
   }
 
