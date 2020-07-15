@@ -38,8 +38,11 @@ class _PageSplashState extends State<PageSplash> {
   @override
   Widget build(BuildContext context) {
     if (_data == null) {
-      return Container(color: const Color(0xFFd92e29));
+      return Container(color: isDarkMode(context) ? Colors.grey[900] : Colors.white);
     }
     return widget.builder(context, _data);
+  }
+  bool isDarkMode(BuildContext context){
+    return MediaQuery.of(context).platformBrightness == Brightness.dark;
   }
 }
