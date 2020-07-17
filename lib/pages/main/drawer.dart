@@ -22,8 +22,9 @@ class _Drawer extends StatelessWidget {
                           Navigator.pushNamed(context, ROUTE_SETTING);
                         },
                       ),
-                      _DrawerTile(icon: Icon(Icons.timer), title: Text("定时"), onTap: (){
-                        showDialog(context: context, builder: (BuildContext context) => DialogSleepTimer());
+                      _DrawerTile(icon: Icon(Icons.timer), title: Text("定时"), onTap: () {
+                        Navigator.pop(context);
+                        DialogSleepTimer.show(context);
                       })
                     ],
                   ),
