@@ -70,7 +70,7 @@ class CloudPageState extends State<MainCloudPage> with AutomaticKeepAliveClientM
                   context.secondaryNavigator.pushNamed(pageDaily);
                   break;
                 case 1:
-                  context.secondaryNavigator.pushNamed(ROUTE_TOP_PLAYLIST);
+                  context.secondaryNavigator.pushNamed(ROUTE_HIGH_QUALITY_PLAYLIST);
                   break;
                 case 2:
                   context.secondaryNavigator.pushNamed(pageLeaderboard);

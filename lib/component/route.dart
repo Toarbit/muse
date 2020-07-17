@@ -6,6 +6,7 @@ import 'package:muse/pages/page_my_dj.dart';
 import 'package:muse/pages/player/page_fm_playing.dart';
 import 'package:muse/pages/player/page_playing.dart';
 import 'package:muse/pages/playlist/page_daily_playlist.dart';
+import 'package:muse/pages/playlist/page_highquality_playlist.dart';
 import 'package:muse/pages/playlist/page_personalized_playlist.dart';
 import 'package:muse/pages/playlist/page_top_playlist.dart';
 import 'package:muse/pages/setting/page_setting.dart';
@@ -51,6 +52,8 @@ const ROUTE_SETTING_THEME = '/setting/theme';
 
 const ROUTE_TOP_PLAYLIST = "/toplist";
 
+const ROUTE_HIGH_QUALITY_PLAYLIST = "/toplist/highquality";
+
 const ROUTE_PERSONALIZED_PLAYLIST = "/personalized_list";
 
 const pageWelcome = 'welcome';
@@ -70,6 +73,7 @@ final Map<String, WidgetBuilder> routes = {
   ROUTE_SETTING: (context) => SettingPage(),
   ROUTE_SETTING_THEME: (context) => SettingThemePage(),
   ROUTE_TOP_PLAYLIST: (context) => TopPlaylistPage(),
+  ROUTE_HIGH_QUALITY_PLAYLIST: (context) => HighQualityPlaylistPage(),
   ROUTE_PERSONALIZED_PLAYLIST: (context) => PersonalizedPlaylistPage(),
   pageWelcome: (context) => PageWelcome(),
   pageFmPlaying: (context) => PagePlayingFm(),

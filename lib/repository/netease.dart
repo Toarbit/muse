@@ -168,6 +168,11 @@ class NeteaseRepository {
     return doRequest("/top/playlist", {"limit": limit, "offset": offset});
   }
 
+  ///精品歌单
+  Future<Result<Map>> highQualityPlaylist() {
+    return doRequest("/top/playlist/highquality");
+  }
+
   /// 推荐的新歌（10首）
   Future<Result<Map>> personalizedNewSong() {
     return doRequest("/personalized/newsong");
