@@ -20,7 +20,6 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-//        print('滑动到了最底部');
         _getMore();
       }
     });
@@ -32,7 +31,7 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: const Text("歌单"),
+        title: const Text("热门歌单"),
       ),
       body: view(context)
     );
@@ -51,7 +50,7 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
   }
   Widget buildView(BuildContext context) {
     return RefreshIndicator(
-      child: SingleChildScrollView(
+      child: data == null ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         controller: _scrollController,
         child: GridView.count(
           padding: EdgeInsets.all(6.0),
@@ -79,7 +78,6 @@ class _TopPlaylistState extends State<TopPlaylistPage> {
 
   // TODO 提供加载标识
   Future<Null> _getMore() async {
-    if (data == null || data.length == 0) return _handleRefresh();
     var list = await (await neteaseRepository.topPlaylist(offset: data.length)).asFuture;
 //    debugPrint("load more size: ${list.length}");
     setState(() {

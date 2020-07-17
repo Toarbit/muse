@@ -159,13 +159,12 @@ class NeteaseRepository {
   }
 
   ///推荐歌单
-  Future<Result<Map>> personalizedPlaylist({int limit = 30}) {
-    debugPrint("get personalized playlist");
-    return doRequest("/personalized", {"limit": limit, "total": true, "n": 1000});
+  Future<Result<Map>> personalizedPlaylist({int limit = 30, int offset = 0}) {
+    return doRequest("/personalized", {"limit": limit, "offset": offset, "total": true, "n": 1000});
   }
 
   ///热门歌单
-  Future<Result<Map>> topPlaylist({int limit = 30, int offset = 0}) {
+  Future<Result<Map>> topPlaylist({int offset = 0, int limit = 30}) {
     return doRequest("/top/playlist", {"limit": limit, "offset": offset});
   }
 

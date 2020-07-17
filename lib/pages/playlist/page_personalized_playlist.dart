@@ -38,9 +38,9 @@ class _PersonalizedPlaylistState extends State<PersonalizedPlaylistPage> {
 
   Widget buildView(BuildContext context) {
     return RefreshIndicator(
-      child: SingleChildScrollView(
+      child: data == null ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         controller: _scrollController,
-        child: data == null ? CircularProgressIndicator() : GridView.count(
+        child: GridView.count(
           padding: EdgeInsets.all(6.0),
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
