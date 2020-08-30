@@ -149,7 +149,7 @@ class NeteaseRepository {
   ///id 歌单id
   ///return true if action success
   Future<bool> playlistSubscribe(int id, bool subscribe) async {
-    final response = await doRequest("/playlist/subscribe", {"id": id, 't': subscribe ? 1 : 2});
+    final response = await doRequest("/playlist/subscribe", {"id": id, 't': subscribe ? "subscribe" : "unsubscribe"});
     return response.isValue;
   }
 

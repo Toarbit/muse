@@ -72,21 +72,25 @@ class _ItemTitle extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(left: 10)),
-                Container(
-                  height: 60,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        payload.title,
-                        style: Theme.of(context).textTheme.subtitle2,
-                      ),
-                      Text(
-                        payload.subtitle,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ],
+                Expanded(
+                  child: Container(
+                    height: 60,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          payload.title,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        Text(
+                          payload.subtitle,
+                          style: Theme.of(context).textTheme.caption,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Spacer(),
